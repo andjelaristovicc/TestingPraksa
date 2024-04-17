@@ -3,7 +3,7 @@ const {test, expect} = require('@playwright/test');
 
 ///this is one test case //da ne pisemo func koristimo anon ()=>
 ///jer je js async i pokusace da izvrsi sve u isto vreme koristimo await za steps i async za funkc
-test.only('Browser Context-Validating error login', async ({browser})=> {
+test('Browser Context-Validating error login', async ({browser})=> {
 
     //fresh browser like incognito
     const context = await browser.newContext(); //this is default if i put page in the function
@@ -13,6 +13,7 @@ test.only('Browser Context-Validating error login', async ({browser})=> {
     const logIN = page.locator('#login-button');
     const items = page.locator(".inventory_item_description a");
     await page.goto("https://www.saucedemo.com/");
+    
 
 
     console.log(await page.title());
@@ -47,7 +48,7 @@ test('Wrong password test', async ({browser})=> {
     const context = await browser.newContext();
     const page = await context.newPage();
     await page.goto("https://www.saucedemo.com/");
-    console.log(await page.title());
+    console.log(await page.title()); 
 
     await page.locator('#user-name').fill("standard_user");
     await page.locator("[type= 'password']").fill("secret_saucee");
@@ -77,6 +78,8 @@ test('Valid data test', async ({browser})=> {
 
 test('Invalid username test', async ({page})=> {
 
+    await page.goto("https://www.saucedemo.com/");
+
     await page.locator('#user-name').fill("teeest");
     await page.locator("[type= 'password']").fill("secret_sauce");
     await page.locator('#login-button').click();
@@ -88,10 +91,7 @@ test('Invalid username test', async ({page})=> {
 });
 
 
-test('Page Test', async ({page})=> {
-   
-    await page.goto("https://google.com");
-    //get title - assertion
-    console.log(await page.title());
-    await expect(page).toHaveTitle("Google");
-});
+
+///npx playwright codegen LINK
+
+

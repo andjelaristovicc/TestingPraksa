@@ -18,7 +18,9 @@ module.exports = defineConfig({
     timeout: 5000
   },
   use:{
-    headless: false
+    headless: false,
+    screenshot: 'on',
+    trace: 'retain-on-failure'
   },
 
   /* Run tests in files in parallel */
