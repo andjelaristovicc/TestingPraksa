@@ -1,6 +1,6 @@
 const {test, expect} = require('@playwright/test');
 
-
+///dodaj asertacije u svaki od testova, kao i asertaciju kad nema nicega npr kad je korpa prazna
 
 test('Add to cart', async ({ page }) => {
     await page.goto('https://www.saucedemo.com/');
@@ -15,6 +15,14 @@ test('Add to cart', async ({ page }) => {
     await page.locator('[data-test="shopping-cart-link"]').click();
     await expect(page.locator(".inventory_item_name")).toContainText('Sauce Labs Backpack')
     await page.getByRole("button", {name: "checkout"});
+
+    const inventoryItemName = await page.locator(".inventory_item_name");
+    const inventoryItemText = await inventoryItemName.textContent();
+    expect(inventoryItemText).toContain('Sauce Labs Backpack');
+
+    
+    const checkoutButton = page.locator('button[data-test="checkout"]');
+    await expect(checkoutButton).not.toBeNull(); 
    
   });
 
@@ -33,11 +41,16 @@ test('Remove', async ({ page }) => {
 
   await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
   await page.locator('[data-test="remove-sauce-labs-backpack"]').click();
+
+  const removeBtn = page.locator('[data-test="remove-sauce-labs-backpack"]');
+  await expect(removeBtn).toBeHidden();
+
 });
 
 
 
 test('Remove from cart', async ({ page }) => {
+  
   await page.goto('https://www.saucedemo.com/');
 
 
@@ -54,5 +67,13 @@ test('Remove from cart', async ({ page }) => {
   await page.locator('[data-test="shopping-cart-link"]').click();
   await page.locator('[data-test="remove-sauce-labs-backpack"]').click();
   await page.locator('[data-test="remove-sauce-labs-bike-light"]').click();
+  
+  const removeBtn = page.locator('[data-test="remove-sauce-labs-backpack"]');
+  await expect(removeBtn).toBeHidden();
+
+  const removeBtn2 =page.locator('[data-test="remove-sauce-labs-bike-light"]');
+  await expect(removeBtn2).toBeHidden();
+  
+
 });
 
