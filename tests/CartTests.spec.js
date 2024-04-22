@@ -1,16 +1,30 @@
 const {test, expect} = require('@playwright/test');
 
-///dodaj asertacije u svaki od testova, kao i asertaciju kad nema nicega npr kad je korpa prazna
+
+test.beforeEach('Log into page',async({page}) =>{
+  await page.goto('https://www.saucedemo.com/');
+
+  await page.getByPlaceholder('Username').click();
+  await page.getByPlaceholder('Username').fill('standard_user');
+
+  await page.getByPlaceholder('Password').click();
+  await page.getByPlaceholder('Password').fill('secret_sauce');
+
+  await page.getByRole('button', { name: 'Login' }).click();
+
+});
+
+
 
 test('Add to cart', async ({ page }) => {
-    await page.goto('https://www.saucedemo.com/');
+    /* await page.goto('https://www.saucedemo.com/');
     const username = page.locator('[data-test="username"]');
     const password =  page.locator('[data-test="password"]');
     await username.click();
     await username.fill('standard_user');
     await password.click();
-    await password.fill('secret_sauce');
-    await page.locator('[data-test="login-button"]').click();
+    await password.fill('secret_sauce'); */
+    ///await page.locator('[data-test="login-button"]').click();
     await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
     await page.locator('[data-test="shopping-cart-link"]').click();
     await expect(page.locator(".inventory_item_name")).toContainText('Sauce Labs Backpack')
@@ -29,7 +43,7 @@ test('Add to cart', async ({ page }) => {
 
 
 test('Remove', async ({ page }) => {
-  await page.goto('https://www.saucedemo.com/');
+  /* await page.goto('https://www.saucedemo.com/');
 
   await page.getByPlaceholder('Username').click();
   await page.getByPlaceholder('Username').fill('standard_user');
@@ -37,7 +51,7 @@ test('Remove', async ({ page }) => {
   await page.getByPlaceholder('Password').click();
   await page.getByPlaceholder('Password').fill('secret_sauce');
 
-  await page.getByRole('button', { name: 'Login' }).click();
+  await page.getByRole('button', { name: 'Login' }).click(); */
 
   await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
   await page.locator('[data-test="remove-sauce-labs-backpack"]').click();
@@ -50,7 +64,7 @@ test('Remove', async ({ page }) => {
 
 
 test('Remove from cart', async ({ page }) => {
-  
+/*   
   await page.goto('https://www.saucedemo.com/');
 
 
@@ -60,7 +74,7 @@ test('Remove from cart', async ({ page }) => {
   await page.getByPlaceholder('Password').click();
   await page.getByPlaceholder('Password').fill('secret_sauce');
 
-  await page.getByRole('button', { name: 'Login' }).click();
+  await page.getByRole('button', { name: 'Login' }).click(); */
 
   await page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click();
   await page.locator('[data-test="add-to-cart-sauce-labs-bike-light"]').click();
@@ -73,6 +87,9 @@ test('Remove from cart', async ({ page }) => {
 
   const removeBtn2 =page.locator('[data-test="remove-sauce-labs-bike-light"]');
   await expect(removeBtn2).toBeHidden();
+
+  const removed = page.locator('.removed_cart_item');
+  await expect(removed).toBeTruthy;
   
 
 });
