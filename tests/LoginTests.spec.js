@@ -1,4 +1,5 @@
 const {test, expect} = require('@playwright/test');
+const {LoginPage} = require('../pageobjects/LoginPage');
 
 
 ///this is one test case //da ne pisemo func koristimo anon ()=>
@@ -49,31 +50,48 @@ test('Wrong password test', async ({browser})=> {
     const page = await context.newPage();
     await page.goto("https://www.saucedemo.com/");
     console.log(await page.title()); 
-
     await page.locator('#user-name').fill("standard_user");
     await page.locator("[type= 'password']").fill("secret_saucee");
+    await page.screenshot({path:'wholepage.png'});
     await page.locator('#login-button').click();
     console.log(await page.locator("[data-test= 'error']").textContent());
+    await page.locator("[data-test= 'error']").screenshot({path: 'error.png'});
     await expect(page.locator("[data-test= 'error']")).toContainText('do not match')
 
 });
 
-
-test('Valid data test', async ({browser})=> {
-
-    const context = await browser.newContext(); 
-    const page = await context.newPage();
+test('visual', async({page})=>{
     await page.goto("https://www.saucedemo.com/");
-    console.log(await page.title());
+    expect(await page.screenshot()).toMatchSnapshot('wholepage.png');
 
-    await page.locator('#user-name').fill("standard_user");
-    await page.locator("[type= 'password']").fill("secret_sauce");
-    await page.locator('#login-button').click();
-   
-    console.log(await page.locator(".inventory_item_description a").nth(0).textContent());
 
-   // console.log(await page.locator("[data-test= 'error']").textContent());
+})
+
+
+test('Valid data test', async ({page})=> {
+
+    const username = "standard_user";
+    const password = "secret_sauce";
     
+    ///console.log(await page.title());
+
+    const loginPage = new LoginPage(page);
+    await loginPage.goTo();
+    await loginPage.loginData(username, password);
+    expect(await page.locator(".inventory_item_description a").nth(0).textContent());
+
+});
+
+test.only('Wrong password test with POM', async ({page})=> {
+    
+    const username = "standard_user";
+    const password = "teest";
+    const loginPage = new LoginPage(page);
+    await loginPage.goTo();
+    await loginPage.loginData(username, password);
+    //console.log(await page.locator("[data-test= 'error']").textContent());
+     expect(await loginPage.error.toContainText('do not match'));
+
 });
 
 test('Invalid username test', async ({page})=> {
@@ -83,6 +101,7 @@ test('Invalid username test', async ({page})=> {
     await page.locator('#user-name').fill("teeest");
     await page.locator("[type= 'password']").fill("secret_sauce");
     await page.locator('#login-button').click();
+    
   
     console.log(await page.locator("[data-test= 'error']").textContent());
     await expect(page.locator("[data-test= 'error']")).toContainText('do not match')
