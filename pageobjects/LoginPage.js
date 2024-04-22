@@ -7,6 +7,7 @@ constructor(page){
     this.userName = page.locator('#user-name');
     this.password = page.locator("[type= 'password']");
     this.error = page.locator("[data-test= 'error']");
+    this.item = page.locator(".inventory_item_description a");
 }
 
 async goTo(){

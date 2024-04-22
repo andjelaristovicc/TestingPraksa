@@ -1,5 +1,5 @@
 const {test, expect} = require('@playwright/test');
-const {LoginPage} = require('../pageobjects/LoginPage');
+const {LoginPage} = require('../../pageobjects/LoginPage');
 
 
 ///this is one test case //da ne pisemo func koristimo anon ()=>
@@ -56,7 +56,7 @@ test('Wrong password test', async ({browser})=> {
     await page.locator('#login-button').click();
     console.log(await page.locator("[data-test= 'error']").textContent());
     await page.locator("[data-test= 'error']").screenshot({path: 'error.png'});
-    await expect(page.locator("[data-test= 'error']")).toContainText('do not match')
+    await expect(page.locator("[data-test= 'error']")).toContainText('do not match');
 
 });
 
@@ -68,7 +68,7 @@ test('visual', async({page})=>{
 })
 
 
-test('Valid data test', async ({page})=> {
+test.only('Valid data test', async ({page})=> {
 
     const username = "standard_user";
     const password = "secret_sauce";
@@ -78,21 +78,11 @@ test('Valid data test', async ({page})=> {
     const loginPage = new LoginPage(page);
     await loginPage.goTo();
     await loginPage.loginData(username, password);
-    expect(await page.locator(".inventory_item_description a").nth(0).textContent());
+    expect(await loginPage.item.nth(0)).toBeVisible();
 
 });
 
-test.only('Wrong password test with POM', async ({page})=> {
-    
-    const username = "standard_user";
-    const password = "teest";
-    const loginPage = new LoginPage(page);
-    await loginPage.goTo();
-    await loginPage.loginData(username, password);
-    //console.log(await page.locator("[data-test= 'error']").textContent());
-     expect(await loginPage.error.toContainText('do not match'));
 
-});
 
 test('Invalid username test', async ({page})=> {
 
