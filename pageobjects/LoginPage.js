@@ -22,14 +22,6 @@ async loginData(username, password){
     await this.signInButton.click();
 }
 
-/* async invalidData(error){
-    await this.userName.fill(username);
-    await this.password.fill(password);
-
-}  */
-
-
-
 }
 
 module.exports = {LoginPage};

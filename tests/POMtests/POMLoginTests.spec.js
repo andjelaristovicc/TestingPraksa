@@ -3,7 +3,6 @@ const {LoginPage} = require('../../pageobjects/LoginPage');
 
 
 test('Valid data test', async ({page})=> {
-
     const username = "standard_user";
     const password = "secret_sauce";
     const loginPage = new LoginPage(page);
@@ -15,7 +14,6 @@ test('Valid data test', async ({page})=> {
 
 
 test('Wrong password test with POM', async ({page})=> {
-    
     const username = "standard_user";
     const password = "teest";
     const loginPage = new LoginPage(page);
