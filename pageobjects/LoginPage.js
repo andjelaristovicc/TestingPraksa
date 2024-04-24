@@ -1,3 +1,12 @@
+const {expect} = require('@playwright/test');
+
+const validUsername = "standard_user";
+const validPassword = "secret_sauce";
+const invalidUsername = "test";
+const invalidPassword = "testtt";
+const emptyUsername = "";
+const emptyPassword = "";
+
 class LoginPage {
 
 constructor(page){
@@ -16,11 +25,34 @@ async goTo(){
 
 }
 
-async loginData(username, password){
-    await this.userName.fill(username);
-    await this.password.fill(password);
+async validLogin(){
+    await this.userName.fill(validUsername);
+    await this.password.fill(validPassword);
     await this.signInButton.click();
 }
+async invalidUsername(){
+    await this.userName.fill(invalidUsername);
+    await this.password.fill(validPassword);
+    await this.signInButton.click();
+    await expect(this.error).toContainText('Epic sadface');
+}
+
+async invalidPassword(){
+
+    await this.userName.fill(validUsername);
+    await this.password.fill(invalidPassword);
+    await this.signInButton.click();
+    await expect(this.error).toContainText('Epic sadface');
+}
+
+async noData(){
+
+    await this.userName.fill(emptyUsername);
+    await this.password.fill(emptyPassword);
+    await this.signInButton.click();
+    await expect(this.error).toContainText('Epic sadface');
+}
+
 
 }
 

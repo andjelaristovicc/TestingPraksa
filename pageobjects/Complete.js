@@ -18,6 +18,11 @@ class Complete {
 
     }
 
+    async validateBack(){
+
+        expect(this.page.url()).toContain('inventory');
+    }
+
 }
 
 module.exports = {Complete};

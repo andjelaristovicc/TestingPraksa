@@ -1,4 +1,8 @@
+
 const {expect} = require('@playwright/test');
+const item = 'sauce-labs-backpack';
+const itemLabel = 'Sauce Labs Backpack';
+const url = 'checkout-step-one';
 class ProductsPage{
 
 constructor(page){
@@ -16,11 +20,11 @@ async validate() {
 
   }
 
-  async addToCart(item) {
+  async addToCart() {
     await this.page.click(`[data-test="add-to-cart-${item}"]`);
   }
 
-  async removeFromCart(item) {
+  async removeFromCart() {
     await this.page.click(`[data-test="remove-${item}"]`);
   }
 
@@ -29,9 +33,9 @@ async validate() {
   }
 
 
-  async isItemInCart(item) {
-    const itemName = await this.page.textContent(`.inventory_item_name >> text="${item}"`);
-    return itemName === item;
+  async isItemInCart() {
+    const itemName = await this.page.textContent(`.inventory_item_name >> text="${itemLabel}"`);
+    return itemName === itemLabel;
   }
   
 
@@ -40,13 +44,13 @@ async validate() {
     return !await button.isHidden();
   }
 
-  async isButtonHidden(item) {
+  async isButtonHidden() {
     const button = await this.page.locator(`[data-test="remove-${item}"]`);
     return await button.isHidden();
   }
 
-  async isItemRemoved(item) {
-    const removedItem = await this.page.locator(`.removed_cart_item[title="${item}"]`);
+  async isItemRemoved() {
+    const removedItem = await this.page.locator(`.removed_cart_item[title="${itemLabel}"]`);
     return removedItem !== null;
   }
 
@@ -55,6 +59,15 @@ async validate() {
     return !await button.isHidden();
   }
 
+  async goToCheckout(){
+    await this.page.click('button[data-test="checkout"]');
+
+  }
+
+  async isCheckoutValid(){
+
+    expect(this.page.url()).toContain(url);
+  }
 
 }
 

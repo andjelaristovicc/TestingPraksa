@@ -21,6 +21,15 @@ class CheckoutOverview {
         await expect(this.page.url()).toContain('checkout-step-two');
         }
 
+    async validateCompletion() {
+        expect(this.page.url()).toContain('checkout-complete');;
+        }
+
+    async validateGettingBack() {
+        expect(this.page.url()).toContain('inventory');
+        }
+    
+
     
     }
     

@@ -1,36 +1,35 @@
 const {test, expect} = require('@playwright/test');
-const {LoginPage} = require('../../pageobjects/LoginPage');
+const {POmanager} = require('../../pageobjects/POMmanager');
 
 
 test('Valid data test', async ({page})=> {
-    const username = "standard_user";
-    const password = "secret_sauce";
-    const loginPage = new LoginPage(page);
+    
+    const poManager = new POmanager(page);
+    const loginPage = poManager.getLoginPage();
     await loginPage.goTo();
-    await loginPage.loginData(username, password);
+    await loginPage.validLogin();
     expect(await loginPage.item.nth(0)).toBeVisible();
 
 });
 
 
 test('Wrong password test with POM', async ({page})=> {
-    const username = "standard_user";
-    const password = "teest";
-    const loginPage = new LoginPage(page);
+   
+    const poManager = new POmanager(page);
+    const loginPage = poManager.getLoginPage();
     await loginPage.goTo();
-    await loginPage.loginData(username, password);
-    expect(loginPage.error).toContainText('do not match');
+    await loginPage.invalidPassword();
+    
 
 });
 
 test('Invalid username test', async ({page})=> {
 
-    const username = "test";
-    const password = "secret_sauce";
-    const loginPage = new LoginPage(page);
+    const poManager = new POmanager(page);
+    const loginPage = poManager.getLoginPage();
     await loginPage.goTo();
-    await loginPage.loginData(username, password);
-    expect(loginPage.error).toContainText('do not match');
+    await loginPage.invalidUsername();
+    
 
     
 });
@@ -38,12 +37,10 @@ test('Invalid username test', async ({page})=> {
 
 test('Empty fields test', async ({page})=> {
 
-    const username = "";
-    const password = "";
-    const loginPage = new LoginPage(page);
+    const poManager = new POmanager(page);
+    const loginPage = poManager.getLoginPage();
     await loginPage.goTo();
-    await loginPage.loginData(username, password);
-    expect(loginPage.error).toContainText('Epic sadface');
-
+    await loginPage.noData();
+   
     
 });

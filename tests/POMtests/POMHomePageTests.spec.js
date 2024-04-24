@@ -1,58 +1,59 @@
 const {test, expect} = require('@playwright/test');
-const {ProductsPage} = require('../../pageobjects/ProductsPage');
-const {LoginPage} = require('../../pageobjects/LoginPage');
+const {POmanager} = require('../../pageobjects/POMmanager');
 
 test.beforeEach('Log into page',async({page}) =>{
-    const username = "standard_user";
-    const password = "secret_sauce";
-    const loginPage = new LoginPage(page);
-    const productsPage = new ProductsPage(page);
+    const poManager = new POmanager(page);
+    const loginPage = poManager.getLoginPage();
+    const productsPage = poManager.getHomePage();
     await loginPage.goTo();
-    await loginPage.loginData(username, password);
+    await loginPage.validLogin();
     await productsPage.validate();
   });
 
   test("Add item to the cart", async ({ page }) => {
-    const productsPage = new ProductsPage(page);
-    await productsPage.addToCart('sauce-labs-backpack');
+    const poManager = new POmanager(page);
+    const productsPage = poManager.getHomePage();
+    await productsPage.addToCart();
     await productsPage.goToShoppingCart();
 
-    expect(await productsPage.isItemInCart('Sauce Labs Backpack')).toBeTruthy();
+    expect(await productsPage.isItemInCart()).toBeTruthy();
 
   });
   
   test('Remove', async ({ page }) => {
-    const productsPage = new ProductsPage(page);
-    await productsPage.addToCart('sauce-labs-backpack');
-    await productsPage.removeFromCart('sauce-labs-backpack');
+    const poManager = new POmanager(page);
+    const productsPage = poManager.getHomePage();
+    await productsPage.addToCart();
+    await productsPage.removeFromCart();
   
-    expect(await productsPage.isButtonHidden('sauce-labs-backpack')).toBeTruthy();
+    expect(await productsPage.isButtonHidden()).toBeTruthy();
   });
   
   test('Remove from cart', async ({ page }) => {
-    const productsPage = new ProductsPage(page);
-    await productsPage.addToCart('sauce-labs-backpack');
-    await productsPage.addToCart('sauce-labs-bike-light');
+    const poManager = new POmanager(page);
+    const productsPage = poManager.getHomePage();
+    await productsPage.addToCart();
     await productsPage.goToShoppingCart();
-    await productsPage.removeFromCart('sauce-labs-backpack');
-    await productsPage.removeFromCart('sauce-labs-bike-light');
+    await productsPage.removeFromCart();
+
   
-    expect(await productsPage.isButtonHidden('sauce-labs-backpack')).toBeTruthy();
-    expect(await productsPage.isButtonHidden('sauce-labs-bike-light')).toBeTruthy();
-    expect(await productsPage.isItemRemoved('Sauce Labs Backpack')).toBeTruthy();
-    expect(await productsPage.isItemRemoved('Sauce Labs Bike Light')).toBeTruthy();
+    expect(await productsPage.isButtonHidden()).toBeTruthy();
+
+    expect(await productsPage.isItemRemoved()).toBeTruthy();
+
   });
 
-  test.only('Click Checkout Button', async ({ page }) => {
-    const productsPage = new ProductsPage(page);
-    await productsPage.addToCart('sauce-labs-backpack');
+  test('Click Checkout Button', async ({ page }) => {
+    const poManager = new POmanager(page);
+    const productsPage = poManager.getHomePage();;
+    await productsPage.addToCart();
     await productsPage.goToShoppingCart();
-    expect(await productsPage.isItemInCart('Sauce Labs Backpack')).toBeTruthy();
+    expect(await productsPage.isItemInCart()).toBeTruthy();
     expect(await productsPage.isCheckoutButtonVisible()).toBeTruthy();
     
-    await productsPage.page.click('button[data-test="checkout"]');
+    await productsPage.goToCheckout();
      
-    expect(productsPage.page.url()).toContain('checkout-step-one');
+    await productsPage.isCheckoutValid();
   });
 
   

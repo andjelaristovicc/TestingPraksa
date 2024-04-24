@@ -1,85 +1,72 @@
 const {test, expect} = require('@playwright/test');
-const {LoginPage} = require('../../pageobjects/LoginPage');
-const {CheckoutForm} = require('../../pageobjects/CheckoutForm');
-const {ProductsPage} = require('../../pageobjects/ProductsPage');
+const {POmanager} = require('../../pageobjects/POMmanager');
 
 
 test.beforeEach('Proceed to checkout', async ({page})=> {
-    const username = "standard_user";
-    const password = "secret_sauce";
-    const loginPage = new LoginPage(page);
-    const productsPage = new ProductsPage(page);
-    const checkoutPage = new CheckoutForm(page);
+    const poManager = new POmanager(page);
+    const productsPage = poManager.getHomePage();
+    const loginPage = poManager.getLoginPage();
+    const checkoutPage = poManager.getCheckoutPage();
     await loginPage.goTo();
-    await loginPage.loginData(username, password);
+    await loginPage.validLogin();
     await productsPage.validate();
-    await productsPage.addToCart('sauce-labs-backpack');
+    await productsPage.addToCart();
     await productsPage.goToShoppingCart();
-    expect(await productsPage.isItemInCart('Sauce Labs Backpack')).toBeTruthy();
+    expect(await productsPage.isItemInCart()).toBeTruthy();
     expect(await productsPage.isCheckoutButtonVisible()).toBeTruthy();
-    await productsPage.page.click('button[data-test="checkout"]');
+    await productsPage.goToCheckout();
+    await checkoutPage.validateCheckoutForm();
+});
+
+
+
+test('Valid data test', async ({page})=> {
+ 
+    const poManager = new POmanager(page);
+    const checkoutPage = poManager.getCheckoutPage();
+    await checkoutPage.checkoutData();
     await checkoutPage.validateCheckoutPage();
 
 });
 
-
-test('Valid data test', async ({page})=> {
-    const firstName = "Test";
-    const lastName = "Testic";
-    const zipCode = "11000"
-    const checkoutPage = new CheckoutForm(page);
-    await checkoutPage.checkoutData(firstName, lastName, zipCode);
-    expect(checkoutPage.page.url()).toContain('checkout-step-two');
-
-});
-
 test('Cancel test', async ({page})=> {
-    const firstName = "Test";
-    const lastName = "Testic";
-    const zipCode = "11000"
-    const checkoutPage = new CheckoutForm(page);
-    await checkoutPage.cancel(firstName, lastName, zipCode);
-    expect(checkoutPage.page.url()).toContain('cart');
+    const poManager = new POmanager(page);
+    const checkoutPage = poManager.getCheckoutPage();
+    await checkoutPage.cancel();
+    await checkoutPage.validateCart();
 
 });
 
 test('Missing firstname test', async ({page})=> {
-    const firstName = "";
-    const lastName = "Testic";
-    const zipCode = "11000"
-    const checkoutPage = new CheckoutForm(page);
-    await checkoutPage.checkoutData(firstName, lastName, zipCode);
-    await expect(checkoutPage.error).toContainText('Error: First Name is required');
+    const poManager = new POmanager(page);
+    const checkoutPage = poManager.getCheckoutPage();
+    await checkoutPage.invalidName();
+    await checkoutPage.validateNameError();
 
 });
 
 test('Missing lastname test', async ({page})=> {
-    const firstName = "Test";
-    const lastName = "";
-    const zipCode = "11000"
-    const checkoutPage = new CheckoutForm(page);
-    await checkoutPage.checkoutData(firstName, lastName, zipCode);
-    await expect(checkoutPage.error).toContainText('Error: Last Name is required');
+    const poManager = new POmanager(page);
+    const checkoutPage = poManager.getCheckoutPage();
+    await checkoutPage.invalidLastName();
+    await checkoutPage.validateLastNameError();
 
 });
 
 test('Missing zipcode test', async ({page})=> {
-    const firstName = "Test";
-    const lastName = "Testic";
-    const zipCode = ""
-    const checkoutPage = new CheckoutForm(page);
-    await checkoutPage.checkoutData(firstName, lastName, zipCode);
-    await expect(checkoutPage.error).toContainText('Error: Postal Code is required');
+    const poManager = new POmanager(page);
+    const checkoutPage = poManager.getCheckoutPage();
+    await checkoutPage.invalidZipCode();
+    await checkoutPage.validateZipError();
+    
 
 });
 
 test('Missing all data test', async ({page})=> {
-    const firstName = "";
-    const lastName = "";
-    const zipCode = ""
-    const checkoutPage = new CheckoutForm(page);
-    await checkoutPage.checkoutData(firstName, lastName, zipCode);
-    await expect(checkoutPage.error).toContainText('Error: First Name is required');
+    const poManager = new POmanager(page);
+    const checkoutPage = poManager.getCheckoutPage();
+    await checkoutPage.noData();
+    await checkoutPage.validateNameError();
 
 });
 
